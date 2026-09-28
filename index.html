@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Triqui - Tres en Raya: juego web responsive con modo de 2 jugadores e inteligencia artificial (Fácil, Medio y Difícil con Minimax)." />
+  <title>Triqui · Tres en Raya</title>
+
+  <!-- Bootstrap 5 (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Estilos personalizados -->
+  <link href="css/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- Fondos decorativos animados (solo decorativos, se ocultan del lector de pantalla) -->
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+  </div>
+
+  <main class="container py-4 py-md-5">
+
+    <!-- ============================ MENÚ PRINCIPAL ============================ -->
+    <section id="menu-screen" class="screen" aria-labelledby="app-title">
+      <div class="panel menu-panel">
+
+        <header class="text-center mb-4">
+          <p class="eyebrow mb-2"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Juego clásico</p>
+          <h1 id="app-title" class="app-title mb-2">Triqui <span class="title-sep">·</span> Tres en Raya</h1>
+          <p class="lead text-dim mb-0">Marca tres casillas en fila y gana a tu rival o a la computadora.</p>
+        </header>
+
+        <!-- Modo de juego -->
+        <div class="mb-4">
+          <span class="field-label" id="mode-label">1 · Elige el modo de juego</span>
+          <div class="choice-group" role="group" aria-labelledby="mode-label">
+            <button type="button" class="choice-btn active" data-mode="2p" aria-pressed="true">
+              <i class="bi bi-people-fill choice-icon"></i>
+              <span class="choice-title">Dos jugadores</span>
+              <span class="choice-sub">X y O en el mismo dispositivo</span>
+            </button>
+            <button type="button" class="choice-btn" data-mode="cpu" aria-pressed="false">
+              <i class="bi bi-cpu-fill choice-icon"></i>
+              <span class="choice-title">Contra la computadora</span>
+              <span class="choice-sub">Tú juegas con X</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dificultad (solo contra la computadora) -->
+        <div id="difficulty-block" class="mb-4 d-none">
+          <span class="field-label" id="difficulty-label">2 · Selecciona la dificultad</span>
+          <div class="choice-group choice-group--three" role="group" aria-labelledby="difficulty-label">
+            <button type="button" class="choice-btn" data-difficulty="easy" aria-pressed="false">
+              <i class="bi bi-dice-5 choice-icon"></i>
+              <span class="choice-title">Fácil</span>
+              <span class="choice-sub">Jugadas aleatorias</span>
+            </button>
+            <button type="button" class="choice-btn active" data-difficulty="medium" aria-pressed="true">
+              <i class="bi bi-lightning-fill choice-icon"></i>
+              <span class="choice-title">Medio</span>
+              <span class="choice-sub">Ataca y bloquea a veces</span>
+            </button>
+            <button type="button" class="choice-btn" data-difficulty="hard" aria-pressed="false">
+              <i class="bi bi-cpu-fill choice-icon"></i>
+              <span class="choice-title">Difícil</span>
+              <span class="choice-sub">Algoritmo Minimax</span>
+            </button>
+          </div>
+          <p id="difficulty-hint" class="hint mb-0"><i class="bi bi-info-circle me-1"></i> <span></span></p>
+        </div>
+
+        <!-- Información de fichas en modo computadora -->
+        <p id="cpu-info" class="player-info d-none mb-4">
+          <span class="tag tag--x"><i class="bi bi-person-fill me-1"></i> Tú juegas con X</span>
+          <span class="tag tag--o"><i class="bi bi-cpu-fill me-1"></i> Computadora con O</span>
+        </p>
+
+        <button id="btn-start" type="button" class="btn btn-grad btn-lg w-100">
+          <i class="bi bi-play-fill me-2"></i>Iniciar partida
+        </button>
+
+        <p class="how-to text-dim mb-0 mt-3">
+          <i class="bi bi-arrow-return-right me-1"></i>
+          Gana quien consiga <strong>3 fichas en línea</strong> (fila, columna o diagonal). Con el teclado: flechas para
+          moverte y <kbd>Enter</kbd> para marcar.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================== PANTALLA DE JUEGO ============================== -->
+    <section id="game-screen" class="screen d-none" aria-labelledby="game-title">
+      <div class="panel game-panel">
+
+        <!-- Encabezado con la información de la partida -->
+        <div class="game-header">
+          <h2 id="game-title" class="h3 mb-0">Partida</h2>
+          <div class="chips">
+            <span id="badge-mode" class="chip"><i class="bi bi-people-fill me-1"></i><span>2 jugadores</span></span>
+            <span id="badge-difficulty" class="chip chip--diff d-none"><i class="bi bi-lightning-fill me-1"></i><span>Medio</span></span>
+          </div>
+        </div>
+
+        <p id="player-info" class="player-info d-none mb-3">
+          <span class="tag tag--x">Tú: X</span>
+          <span class="tag tag--o">Computadora: O</span>
+        </p>
+
+        <!-- Marcador (se conserva entre rondas) -->
+        <div class="scoreboard" role="group" aria-label="Marcador" aria-live="polite">
+          <div class="score-item score-item--x">
+            <span class="score-name">Jugador X</span>
+            <span id="score-x" class="score-value">0</span>
+          </div>
+          <div class="score-item score-item--o">
+            <span class="score-name">Jugador O</span>
+            <span id="score-o" class="score-value">0</span>
+          </div>
+          <div class="score-item score-item--draw">
+            <span class="score-name">Empates</span>
+            <span id="score-draw" class="score-value">0</span>
+          </div>
+        </div>
+
+        <!-- Turno actual / resultado de la partida -->
+        <p id="status" class="status" role="status" aria-live="polite">Turno de <span class="mark-x">X</span></p>
+
+        <!-- Tablero 3x3 (las casillas se crean desde JavaScript) -->
+        <div id="board" class="board" role="group" aria-label="Tablero de juego de 3 por 3 casillas"></div>
+
+        <p class="hint text-center mb-0 mt-3"><i class="bi bi-arrow-left-right me-1"></i> Usa las flechas del teclado para moverte entre casillas.</p>
+
+        <!-- Controles de la partida -->
+        <div class="controls">
+          <button id="btn-new-round" type="button" class="btn btn-grad" aria-label="Iniciar una nueva partida">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Nueva partida
+          </button>
+          <button id="btn-reset-score" type="button" class="btn btn-glass" aria-label="Reiniciar el marcador a cero">
+            <i class="bi bi-arrow-repeat me-1"></i> Reiniciar marcador
+          </button>
+          <button id="btn-menu" type="button" class="btn btn-glass" aria-label="Volver al menú principal">
+            <i class="bi bi-house me-1"></i> Menú principal
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <noscript>
+      <div class="alert alert-warning mt-3">Este juego necesita JavaScript para funcionar. Actívalo en tu navegador.</div>
+    </noscript>
+  </main>
+
+  <!-- ============================== MODAL DE RESULTADO ============================== -->
+  <div class="modal fade" id="result-modal" tabindex="-1" role="dialog" aria-labelledby="result-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-body text-center p-4 p-md-5">
+          <div id="result-icon" class="result-icon"><i class="bi bi-trophy-fill"></i></div>
+          <h3 id="result-title" class="modal-title mb-2">🎉 ¡X ha ganado!</h3>
+          <p id="result-text" class="text-dim mb-4">Buen juego.</p>
+
+          <div class="d-grid gap-2">
+            <button id="btn-play-again" type="button" class="btn btn-grad btn-lg">
+              <i class="bi bi-arrow-counterclockwise me-2"></i>Jugar de nuevo
+            </button>
+            <button id="btn-modal-menu" type="button" class="btn btn-glass">
+              <i class="bi bi-house me-2"></i>Volver al menú
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS (CDN) necesario para los modales -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Lógica del juego -->
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+/* ==========================================================================
+   Triqui · Tres en Raya  —  Estilos personalizados (CSS3)
+   Complementa Bootstrap 5 con un diseño moderno, oscuro, animado y responsive.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIABLES GLOBALES
+   -------------------------------------------------------------------------- */
+:root {
+  --bg-gradient: linear-gradient(135deg, #131a3a 0%, #2d2272 45%, #6b2a86 100%);
+  --panel-bg: rgba(255, 255, 255, 0.08);
+  --panel-border: rgba(255, 255, 255, 0.16);
+  --glass-soft: rgba(255, 255, 255, 0.07);
+
+  --text: #f4f6ff;
+  --text-dim: rgba(244, 246, 255, 0.74);
+
+  --x-color: #ff6b8a;
+  --o-color: #4dd0e1;
+  --win-color: #ffd166;
+
+  --radius: 1.6rem;
+  --shadow-panel: 0 22px 45px rgba(4, 8, 30, 0.45);
+  --transition: 0.22s ease;
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE
+   -------------------------------------------------------------------------- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+.text-dim {
+  color: var(--text-dim) !important;
+}
+
+/* Fondo decorativo con "blobs" flotantes */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.blob {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: blob-float 15s ease-in-out infinite;
+}
+
+.blob--1 { width: 340px; height: 340px; background: var(--x-color); top: -90px; left: -90px; }
+.blob--2 { width: 420px; height: 420px; background: var(--o-color); bottom: -130px; right: -110px; animation-delay: -5s; }
+.blob--3 { width: 300px; height: 300px; background: var(--win-color); top: 42%; left: 58%; opacity: 0.22; animation-delay: -9s; }
+
+@keyframes blob-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(30px, -35px, 0) scale(1.12); }
+}
+
+/* --------------------------------------------------------------------------
+   3. PANELES / PANTALLAS
+   -------------------------------------------------------------------------- */
+.screen {
+  animation: screen-in 0.45s ease both;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: clamp(1.3rem, 4vw, 2.5rem);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.game-panel {
+  max-width: 560px;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--win-color);
+  font-weight: 600;
+}
+
+.app-title {
+  font-size: clamp(1.9rem, 6vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, #ffd166, #ff6b8a 55%, #4dd0e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.title-sep {
+  opacity: 0.6;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.hint {
+  margin-top: 0.85rem;
+  font-size: 0.87rem;
+  color: var(--text-dim);
+}
+
+kbd {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.8em;
+  color: var(--text);
+}
+
+.how-to {
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   4. BOTONES DE ELECCIÓN (modo y dificultad)
+   -------------------------------------------------------------------------- */
+.choice-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.choice-group--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.95rem 0.6rem;
+  text-align: center;
+  color: var(--text);
+  background: var(--glass-soft);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 1.1rem;
+  transition: transform var(--transition), background var(--transition), border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.choice-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-3px);
+}
+
+.choice-btn.active {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.22), rgba(255, 107, 138, 0.22));
+  border-color: var(--win-color);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(255, 209, 102, 0.45);
+}
+
+.choice-btn:focus-visible,
+.btn:focus-visible,
+.cell:focus-visible {
+  outline: 3px solid var(--win-color);
+  outline-offset: 3px;
+}
+
+.choice-icon {
+  font-size: 1.5rem;
+  color: var(--win-color);
+}
+
+.choice-title {
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.choice-sub {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   5. BOTONES GENERALES
+   -------------------------------------------------------------------------- */
+.btn-grad {
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.7rem 1.2rem;
+  background: linear-gradient(135deg, #ff6b8a, #b0468b);
+  box-shadow: 0 12px 26px rgba(176, 70, 139, 0.42);
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+}
+
+.btn-grad:hover,
+.btn-grad:focus {
+  color: #fff;
+  transform: translateY(-3px);
+  filter: brightness(1.08);
+  box-shadow: 0 16px 32px rgba(176, 70, 139, 0.55);
+}
+
+.btn-grad:active {
+  transform: translateY(-1px);
+}
+
+.btn-glass {
+  color: var(--text);
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 1rem;
+  padding: 0.7rem 1.1rem;
+  background: rgba(255, 255, 255, 0.09);
+  transition: transform var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.btn-glass:hover,
+.btn-glass:focus {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.17);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+}
+
+.btn[disabled] {
+  opacity: 0.55;
+}
+
+/* --------------------------------------------------------------------------
+   6. INFORMACIÓN DE LA PARTIDA (chips y etiquetas)
+   -------------------------------------------------------------------------- */
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.chip--diff {
+  background: rgba(255, 209, 102, 0.18);
+  border-color: rgba(255, 209, 102, 0.55);
+  color: #ffe6ab;
+}
+
+/* Se maqueta con flex en CSS propio (nunca combinar d-none con d-flex:
+   en Bootstrap ambas declaraciones son !important y ganaría d-flex). */
+.player-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.tag--x {
+  color: #ffd0da;
+  background: rgba(255, 107, 138, 0.18);
+  border-color: rgba(255, 107, 138, 0.55);
+}
+
+.tag--o {
+  color: #c7f4fb;
+  background: rgba(77, 208, 225, 0.16);
+  border-color: rgba(77, 208, 225, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+   7. MARCADOR
+   -------------------------------------------------------------------------- */
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+  background: var(--glass-soft);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1rem;
+}
+
+.score-name {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.score-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.score-item--x .score-value { color: var(--x-color); }
+.score-item--o .score-value { color: var(--o-color); }
+.score-item--draw .score-value { color: var(--win-color); }
+
+.scoreboard.score-bump .score-value {
+  animation: score-bump 0.45s ease;
+}
+
+@keyframes score-bump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   8. ESTADO (turno / resultado)
+   -------------------------------------------------------------------------- */
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 52px;
+  margin-bottom: 1.1rem;
+  padding: 0.7rem 1rem;
+  text-align: center;
+  font-size: clamp(1rem, 3.4vw, 1.15rem);
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+}
+
+.status.is-win {
+  background: rgba(255, 209, 102, 0.18);
+  border-color: rgba(255, 209, 102, 0.6);
+}
+
+.mark-x {
+  color: var(--x-color);
+  font-weight: 800;
+  text-shadow: 0 0 18px rgba(255, 107, 138, 0.6);
+}
+
+.mark-o {
+  color: var(--o-color);
+  font-weight: 800;
+  text-shadow: 0 0 18px rgba(77, 208, 225, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   9. TABLERO Y CASILLAS
+   -------------------------------------------------------------------------- */
+.board {
+  display: grid;
+  /* Las 3 columnas Y las 3 filas se reparten el espacio por igual:
+     así una casilla marcada nunca encoge (ni agranda) a su fila. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.45rem, 2vw, 0.8rem);
+  width: min(100%, 430px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: inherit;
+  font-size: clamp(2.4rem, 12vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: clamp(0.8rem, 3vw, 1.2rem);
+  transition: transform var(--transition), background var(--transition), border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+/* Hover: solo en casillas vacías y cuando no le toca a la IA */
+.board:not(.board--locked) .cell:not(.cell--x):not(.cell--o):hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.55);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.32);
+}
+
+.board:not(.board--locked) .cell:not(.cell--x):not(.cell--o):active {
+  transform: scale(0.95);
+}
+
+/* Casillas ocupadas: sin efecto hover y cursor por defecto */
+.cell--x,
+.cell--o {
+  cursor: default;
+}
+
+/* Nota: la clase se llama "cell-mark" (y no "mark") para no chocar con la
+   utilidad .mark de Bootstrap, que añade un fondo amarillo al texto. */
+.cell .cell-mark {
+  display: block;
+  animation: mark-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.cell--x .cell-mark {
+  color: var(--x-color);
+  text-shadow: 0 0 26px rgba(255, 107, 138, 0.65);
+}
+
+.cell--o .cell-mark {
+  color: var(--o-color);
+  text-shadow: 0 0 26px rgba(77, 208, 225, 0.65);
+}
+
+@keyframes mark-pop {
+  0%   { transform: scale(0.2) rotate(-25deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(6deg);  opacity: 1; }
+  100% { transform: scale(1) rotate(0);        opacity: 1; }
+}
+
+/* Casillas ganadoras */
+.cell--win {
+  background: rgba(255, 209, 102, 0.24) !important;
+  border-color: var(--win-color) !important;
+  box-shadow: 0 0 28px rgba(255, 209, 102, 0.55), inset 0 0 18px rgba(255, 209, 102, 0.28);
+  animation: win-pulse 0.9s ease-in-out infinite;
+}
+
+.cell--win .cell-mark {
+  color: var(--win-color) !important;
+  text-shadow: 0 0 32px rgba(255, 209, 102, 0.9);
+}
+
+@keyframes win-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.07); }
+}
+
+/* Bloqueo del tablero (fin de partida o turno de la IA) */
+.board--locked .cell {
+  cursor: not-allowed;
+}
+
+.board--locked .cell:not(.cell--x):not(.cell--o) {
+  opacity: 0.72;
+}
+
+.board--finished .cell {
+  cursor: default;
+  animation: none;
+}
+
+.board--finished .cell--win {
+  animation: win-pulse 0.9s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   10. CONTROLES
+   -------------------------------------------------------------------------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+.controls .btn {
+  flex: 1 1 160px;
+  font-size: 0.95rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. MODAL DE RESULTADO
+   -------------------------------------------------------------------------- */
+.modal-content {
+  color: var(--text);
+  background: linear-gradient(160deg, rgba(35, 30, 82, 0.98), rgba(83, 36, 108, 0.98));
+  border: 1px solid var(--panel-border);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-panel);
+  overflow: hidden;
+}
+
+.modal-backdrop.show {
+  opacity: 0.72;
+}
+
+.result-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 1rem;
+  font-size: 2.9rem;
+  color: var(--win-color);
+  background: rgba(255, 209, 102, 0.16);
+  border: 2px solid rgba(255, 209, 102, 0.6);
+  border-radius: 50%;
+  animation: icon-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.result-icon.is-draw {
+  color: var(--o-color);
+  background: rgba(77, 208, 225, 0.14);
+  border-color: rgba(77, 208, 225, 0.6);
+}
+
+@keyframes icon-bounce {
+  0%   { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0);        opacity: 1; }
+}
+
+#result-title {
+  font-size: clamp(1.35rem, 5vw, 1.8rem);
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   12. RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+  .choice-group--three {
+    grid-template-columns: 1fr;
+  }
+
+  .choice-sub {
+    display: none;
+  }
+
+  .controls .btn {
+    flex: 1 1 100%;
+  }
+
+  .score-name {
+    font-size: 0.66rem;
+  }
+
+  .score-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: 2.6rem;
+  }
+}
+
+/* Accesibilidad: respeta a los usuarios que prefieren menos animación */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
